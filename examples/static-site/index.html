@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acme Studio — Pulse demo site</title>
+  <meta name="description" content="A tiny static HTML page instrumented with the Pulse analytics tracker.">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 32px 20px;
+      font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: #e9f0f9; background: radial-gradient(900px 500px at 80% 0%, rgba(123,147,255,.18), transparent 60%), #070b10;
+    }
+    main { max-width: 680px; width: 100%; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid #1c2836; border-radius: 999px; font-size: 12px; color: #8b9cb2; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #3ce3a4; }
+    h1 { margin: 26px 0 12px; font-size: clamp(34px, 6vw, 54px); line-height: 1.04; letter-spacing: -.04em; }
+    h1 em { font-style: normal; color: #3ce3a4; }
+    p { color: #8b9cb2; line-height: 1.65; font-size: 15.5px; }
+    code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; background: #0d141d; border: 1px solid #1c2836; padding: 2px 6px; border-radius: 5px; color: #c7d5e6; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 8px; }
+    button, a.btn {
+      display: inline-flex; align-items: center; gap: 7px; padding: 10px 15px; border-radius: 9px; font-size: 13.5px;
+      font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid #1c2836; background: #121c27; color: #e9f0f9;
+    }
+    button.primary { border: 0; background: linear-gradient(135deg, #3ce3a4, #6fd8ff); color: #04130d; }
+    footer { margin-top: 42px; padding-top: 18px; border-top: 1px solid #16212d; font-size: 12px; color: #61748a; }
+  </style>
+  <!-- The only line you need. data-dev allows localhost + endpoint override. -->
+  <script
+    defer
+    src="http://localhost:4000/t.js"
+    data-site="demo"
+    data-endpoint="http://localhost:4000"
+    data-dev="true"
+    data-exclude="/admin,/preview"
+  ></script>
+</head>
+<body>
+  <main>
+    <span class="badge"><span class="dot"></span>Instrumented with Pulse</span>
+    <h1>Ship a static site.<br><em>Know your visitors.</em></h1>
+    <p>
+      This page is plain HTML with one script tag. Pageviews, session durations, referrers, devices and
+      outbound clicks flow into the local Pulse collector. No cookies, no consent banner, no third parties.
+    </p>
+
+    <div class="actions">
+      <button class="primary" type="button" onclick="pulse.track('signup', { plan: 'pro', source: 'demo' })">
+        Track a signup event
+      </button>
+      <button type="button" onclick="pulse.track('cta_click', { cta: 'hero' })">Track a CTA click</button>
+      <a class="btn" href="https://github.com/acme/pulse" target="_blank" rel="noopener">Outbound link ↗</a>
+    </div>
+
+    <p style="font-size: 13px">
+      Custom events: <code>pulse.track('signup', { plan: 'pro' })</code> ·
+      Opt-out: <code>pulse.optOut()</code>
+    </p>
+
+    <footer>
+      Serve this folder on any static host, or run <code>npm run example</code> from the Pulse folder.
+      Point <code>data-endpoint</code> at your collector origin.
+    </footer>
+  </main>
+</body>
+</html>
