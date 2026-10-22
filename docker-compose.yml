@@ -1,0 +1,29 @@
+services:
+  pulse:
+    build: .
+    container_name: pulse-analytics
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      # Set a strong value in .env before exposing the dashboard.
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      TRUST_PROXY: "1"
+      RETENTION_DAYS: "400"
+      RATE_LIMIT: "120"
+      # Optional page editor: mount a host folder and point CONTENT_DIR at it.
+      # This allows editing your own static site files from the host filesystem.
+      # Note: edits inside the container are ephemeral; use volumes to persist changes.
+      # CONTENT_DIR: /content
+      # EDITOR: "1"
+      # Example mount (Linux requires write access or uid 1000):
+      # - ./my-static-site:/content
+    volumes:
+      # Data volume for events, salt and state:
+      - pulse-data:/data
+      # To edit your own content folder, uncomment and set CONTENT_DIR above.
+      # Example:
+      # - ./examples/static-site:/content
+
+volumes:
+  pulse-data:

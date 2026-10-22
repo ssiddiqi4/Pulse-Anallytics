@@ -1,0 +1,24 @@
+{
+  "name": "pulse-analytics",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Privacy-first visitor analytics for static HTML sites. Zero runtime dependencies.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node scripts/seed.js",
+    "example": "node scripts/serve-example.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "analytics",
+    "static-site",
+    "privacy",
+    "self-hosted"
+  ],
+  "license": "MIT"
+}

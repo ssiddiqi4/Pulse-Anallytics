@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulse Docs · Install and run</title>
+  <meta name="description" content="Install, configure and deploy Pulse, the privacy-first analytics server for static HTML sites.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b10;
+      --panel: #0d141d;
+      --panel-2: #111b26;
+      --line: #1c2836;
+      --line-soft: #16212d;
+      --text: #e9f0f9;
+      --muted: #93a4ba;
+      --dim: #6f8298;
+      --accent: #3ce3a4;
+      --accent-2: #7b93ff;
+      --warn: #f2b866;
+      --bad: #ff6b81;
+      --radius: 14px;
+      --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --panel-2: #f2f5f9;
+        --line: #dfe6ef;
+        --line-soft: #ecf0f6;
+        --text: #0d1724;
+        --muted: #52647a;
+        --dim: #7c8ca0;
+        --accent: #0f9f6e;
+        --accent-2: #4f6ef7;
+        --warn: #a86707;
+        --bad: #c62f4a;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 520px at 82% -10%, rgba(123, 147, 255, .12), transparent 62%),
+        radial-gradient(760px 460px at 2% -6%, rgba(60, 227, 164, .07), transparent 58%),
+        var(--bg);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, pre { font-family: var(--mono); }
+    code {
+      padding: 2px 5px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--panel-2);
+      font-size: .88em;
+      color: var(--text);
+    }
+    pre {
+      margin: 14px 0;
+      padding: 14px 16px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #080e15;
+      color: #d8e3f2;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+    @media (prefers-color-scheme: light) {
+      pre { background: #0d1724; color: #e6eef9; }
+    }
+    pre code { padding: 0; border: 0; background: none; color: inherit; font-size: inherit; }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      backdrop-filter: blur(14px);
+    }
+    .top-in {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      width: min(1220px, 100%);
+      margin: 0 auto;
+      padding: 12px 22px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+    .brand:hover { text-decoration: none; }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      color: #04130d;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+    .mark svg { width: 22px; height: 22px; }
+    .brand strong { display: block; font-size: 15px; letter-spacing: -.02em; line-height: 1.1; }
+    .brand span span { display: block; color: var(--dim); font-size: 8.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+    .top-links { display: flex; gap: 16px; margin-left: auto; align-items: center; font-size: 13px; }
+    .top-links a { color: var(--muted); }
+    .top-links a:hover { color: var(--text); }
+    .top-links .button {
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 238px minmax(0, 1fr);
+      gap: 54px;
+      width: min(1220px, 100%);
+      margin: 0 auto;
+      padding: 34px 22px 90px;
+    }
+    .toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 110px); overflow-y: auto; }
+    .toc p {
+      margin: 0 0 8px;
+      padding: 0 10px;
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .toc a {
+      display: block;
+      padding: 6px 10px;
+      border-left: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .toc a:hover { border-color: var(--accent); color: var(--text); text-decoration: none; background: var(--panel); }
+    .toc .sub { padding-left: 22px; font-size: 12px; }
+
+    main { min-width: 0; max-width: 840px; }
+    .hero { margin-bottom: 34px; }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1 { margin: 14px 0 10px; font-size: clamp(32px, 5vw, 46px); line-height: 1.06; letter-spacing: -.04em; }
+    .lede { max-width: 680px; margin: 0; color: var(--muted); font-size: 16px; }
+    h2 { margin: 46px 0 12px; padding-top: 8px; font-size: 23px; line-height: 1.2; letter-spacing: -.025em; scroll-margin-top: 88px; }
+    h3 { margin: 26px 0 8px; font-size: 16.5px; letter-spacing: -.01em; }
+    p { margin: 10px 0; }
+    ul, ol { margin: 10px 0; padding-left: 22px; }
+    li { margin: 5px 0; }
+    li::marker { color: var(--dim); }
+    hr { margin: 38px 0; border: 0; border-top: 1px solid var(--line-soft); }
+
+    .callout {
+      margin: 18px 0;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+    .callout strong { color: var(--text); }
+    .callout.warn { border-left-color: var(--warn); }
+    .callout.bad { border-left-color: var(--bad); }
+    .callout p:first-child { margin-top: 0; }
+    .callout p:last-child { margin-bottom: 0; }
+
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0 6px; }
+    .card {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .card h3 { margin: 0 0 4px; font-size: 14px; }
+    .card p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+    .card .num { color: var(--accent); font-family: var(--mono); font-size: 11px; }
+
+    table { width: 100%; margin: 16px 0; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--line-soft); text-align: left; vertical-align: top; }
+    th { color: var(--dim); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    td code { white-space: nowrap; }
+    tbody tr:hover { background: var(--panel); }
+
+    .steps { counter-reset: step; margin: 16px 0; padding: 0; list-style: none; }
+    .steps > li {
+      position: relative;
+      margin: 0 0 18px;
+      padding-left: 38px;
+    }
+    .steps > li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .steps > li strong { display: block; margin-bottom: 2px; }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .footer {
+      margin-top: 54px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: minmax(0, 1fr); gap: 26px; padding-top: 24px; }
+      .toc { position: static; order: -1; max-height: none; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+      .toc p { padding: 0 4px; }
+      .toc-nav { display: flex; flex-wrap: wrap; gap: 2px 6px; }
+      .toc a { border-left: 0; padding: 4px 7px; }
+      .toc .sub { display: none; }
+    }
+    @media (max-width: 640px) {
+      .top-in { padding: 10px 14px; }
+      .top-links a:not(.button) { display: none; }
+      .layout { padding: 18px 14px 60px; }
+      .cards { grid-template-columns: minmax(0, 1fr); }
+      h2 { margin-top: 38px; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/" aria-label="Pulse dashboard">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M3 17h5l3-8 5 16 4-11 3 5h6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span><strong>Pulse</strong><span>analytics</span></span>
+      </a>
+      <nav class="top-links" aria-label="Site">
+        <a href="#requirements">Install</a>
+        <a href="#configuration">Config</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a class="button" href="/">Open dashboard →</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="On this page">
+      <p>Install guide</p>
+      <div class="toc-nav">
+        <a href="#overview">Overview</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#quick-start">Quick start</a>
+        <a class="sub" href="#windows">Windows notes</a>
+        <a class="sub" href="#demo-data">Demo data</a>
+        <a href="#add-site">Add your site</a>
+        <a class="sub" href="#snippet-options">Snippet options</a>
+        <a href="#events">Custom events</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#authentication">Authentication</a>
+        <a href="#page-editor">Page editor</a>
+        <a href="#proxy">Reverse proxy</a>
+        <a href="#docker">Docker</a>
+        <a href="#systemd">systemd</a>
+        <a href="#backups">Backups</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#api">API reference</a>
+        <a href="#privacy">Privacy</a>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero" id="overview">
+        <span class="kicker"><span class="dot"></span> Self-hosted · zero dependencies</span>
+        <h1>Install Pulse</h1>
+        <p class="lede">Pulse is a single Node.js process that collects privacy-first visitor analytics for static HTML sites and serves its own dashboard. This guide covers a local install, production deployment, tracking snippets and the visual page editor.</p>
+      </section>
+
+      <div class="cards">
+        <div class="card"><span class="num">01</span><h3>No database</h3><p>Events are append-only JSONL files in <code>data/</code>. Nothing else to install.</p></div>
+        <div class="card"><span class="num">02</span><h3>One script tag</h3><p>Add the tracker to any static site. It works with Hugo, Astro, Eleventy, Jekyll or plain HTML.</p></div>
+        <div class="card"><span class="num">03</span><h3>Yours only</h3><p>No third-party requests, cookies or cross-day identifiers. Back up one folder.</p></div>
+      </div>
+
+      <h2 id="requirements">Requirements</h2>
+      <ul>
+        <li><strong>Node.js 20.11 or newer</strong> (tested on Node 22 and 26). Check with <code>node --version</code>.</li>
+        <li>About 30 MB of disk for the code and 250–350 bytes per stored event.</li>
+        <li>A persistent directory for <code>data/</code>. Docker and PaaS filesystems are ephemeral unless you mount a volume.</li>
+        <li>For public deployments: a domain, TLS (Caddy, Nginx, a load balancer or platform ingress) and a strong <code>ADMIN_TOKEN</code>.</li>
+      </ul>
+      <div class="callout">
+        <p><strong>No <code>npm install</code> is required.</strong> Pulse has zero runtime dependencies. The <code>package.json</code> only defines scripts.</p>
+      </div>
+
+      <h2 id="quick-start">Quick start</h2>
+      <ol class="steps">
+        <li>
+          <strong>Get the code and start the server.</strong>
+          <pre><code>cd pulse-analytics
+npm start</code></pre>
+          The console prints <code>listening http://localhost:4000</code> and the data directory in use.
+        </li>
+        <li>
+          <strong>Open the dashboard.</strong>
+          Visit <a href="http://localhost:4000">http://localhost:4000</a>. On a fresh install the dashboard has no events yet, and shows the snippet to install.
+        </li>
+        <li>
+          <strong>Add a site.</strong>
+          Edit <code>sites.json</code> (created on first run), then restart the server. See <a href="#add-site">Add your site</a>.
+        </li>
+        <li>
+          <strong>Install the tracker.</strong>
+          Paste the snippet into your site's <code>&lt;head&gt;</code> and deploy. A pageview appears in the Live panel within seconds.
+        </li>
+        <li>
+          <strong>Set an admin token before going public.</strong>
+          <pre><code># macOS / Linux
+ADMIN_TOKEN="$(openssl rand -hex 24)" npm start
+
+# Windows PowerShell
+$env:ADMIN_TOKEN = -join ((48..57) + (97..102) | Get-Random -Count 48 | % {[char]$_})
+npm start</code></pre>
+        </li>
+      </ol>
+
+      <h3 id="windows">Windows notes</h3>
+      <p>The commands in this guide use POSIX syntax. In PowerShell, set environment variables with <code>$env:NAME = "value"</code> for the current session, or use <code>setx NAME "value"</code> for future sessions. Quote paths that contain spaces. Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>; Pulse flushes pending events on shutdown.</p>
+
+      <h3 id="demo-data">Load demo data</h3>
+      <p>To explore the dashboard before installing the tracker, generate 90 days of deterministic demo events for the two starter sites:</p>
+      <pre><code>npm run seed -- --days 90 --reset
+npm start</code></pre>
+      <p>The seed writes directly into <code>data/events/</code>. It refuses to add duplicates unless <code>--reset</code> is passed. Use <code>--days 30</code> for a smaller dataset.</p>
+
+      <h2 id="add-site">Add your site</h2>
+      <p>Pulse identifies each site with a short public ID. Edit <code>sites.json</code> in the project root (or the file pointed to by <code>SITES_FILE</code>):</p>
+      <pre><code>{
+  "sites": [
+    { "id": "demo", "name": "Acme Studio", "domain": "acme.example" },
+    { "id": "docs", "name": "Acme Docs", "domain": "docs.acme.example" }
+  ]
+}</code></pre>
+      <ul>
+        <li><code>id</code> — 2–32 characters: lowercase letters, digits, <code>_</code> or <code>-</code>. It is embedded in the snippet and is <strong>not a secret</strong>.</li>
+        <li><code>name</code> — label shown in the dashboard switcher.</li>
+        <li><code>domain</code> — used to treat links from your own domain as direct traffic instead of referrals.</li>
+      </ul>
+      <p>Restart the server after editing the file. Then add this to every page, before <code>&lt;/head&gt;</code>:</p>
+      <pre><code>&lt;script defer src="https://stats.example.com/t.js" data-site="demo"&gt;&lt;/script&gt;</code></pre>
+      <p>The tracker derives the collector origin from its own <code>src</code>. If you serve <code>t.js</code> from a CDN, point it at the collector explicitly:</p>
+      <pre><code>&lt;script
+  defer
+  src="https://cdn.example.com/t.js"
+  data-site="demo"
+  data-endpoint="https://stats.example.com"
+&gt;&lt;/script&gt;</code></pre>
+
+      <h3 id="snippet-options">Snippet options</h3>
+      <table>
+        <thead><tr><th>Attribute</th><th>Default</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>data-site</code></td><td>—</td><td>Required. Site ID from <code>sites.json</code>.</td></tr>
+          <tr><td><code>data-endpoint</code></td><td>script origin</td><td>Collector origin without a trailing slash.</td></tr>
+          <tr><td><code>data-dev</code></td><td><code>false</code></td><td>Track <code>localhost</code>, <code>127.0.0.1</code> and <code>*.local</code>.</td></tr>
+          <tr><td><code>data-respect-dnt</code></td><td><code>true</code></td><td>Honor Do Not Track and Global Privacy Control.</td></tr>
+          <tr><td><code>data-outbound</code></td><td><code>true</code></td><td>Track external and download-link clicks.</td></tr>
+          <tr><td><code>data-exclude</code></td><td>—</td><td>Comma-separated paths or prefixes; supports <code>*</code>, e.g. <code>/admin/*,/preview</code>.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test the install locally</h3>
+      <p>The repository includes an instrumented static page and a tiny file server:</p>
+      <pre><code>npm start        # collector on :4000
+npm run example  # example site on :8080</code></pre>
+      <p>Open <a href="http://localhost:8080">http://localhost:8080</a> and click a button. The example uses <code>data-dev="true"</code> because Pulse ignores localhost by default. Verify the API directly:</p>
+      <pre><code>curl http://localhost:4000/api/v1/health
+curl "http://localhost:4000/api/v1/stats?site=demo&amp;range=24h"</code></pre>
+      <div class="callout warn">
+        <p><strong>No data after installing?</strong> Check that the page is not on <code>localhost</code> without <code>data-dev</code>, that Do Not Track is off, that the endpoint is reachable over HTTPS, and that the site ID matches <code>sites.json</code>. The <a href="#troubleshooting">troubleshooting table</a> covers each case.</p>
+      </div>
+
+      <h2 id="events">Custom events and opt-out</h2>
+      <p>The tracker exposes a small global API. Call it after the script has loaded (for example from your own deferred script):</p>
+      <pre><code>pulse.track('signup', { plan: 'pro', seats: 3 });
+pulse.track('cta_click', { cta: 'hero' });
+
+pulse.pageview(); // force a pageview after a client-side route change
+pulse.optOut();   // stop tracking in this browser
+pulse.optIn();    // resume tracking</code></pre>
+      <p>Names may contain letters, digits, <code>_</code>, <code>.</code>, <code>:</code> and <code>-</code> (max 64 chars). Up to 10 properties are stored: keys max 40 chars, strings max 120, numbers and booleans accepted. Event names appear in the Custom events panel; properties stay in the JSONL data.</p>
+      <p>A privacy-friendly opt-out control can be a plain button:</p>
+      <pre><code>&lt;button type="button" onclick="pulse.optOut()"&gt;Opt out of analytics&lt;/button&gt;</code></pre>
+
+      <h2 id="configuration">Configuration</h2>
+      <p>All settings are environment variables. Defaults are suitable for local use.</p>
+      <table>
+        <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>PORT</code></td><td><code>4000</code></td><td>HTTP port.</td></tr>
+          <tr><td><code>HOST</code></td><td><code>0.0.0.0</code></td><td>Bind address. Prefer <code>127.0.0.1</code> behind a proxy.</td></tr>
+          <tr><td><code>DATA_DIR</code></td><td><code>./data</code></td><td>Event files, salt and persistent state.</td></tr>
+          <tr><td><code>SITES_FILE</code></td><td><code>./sites.json</code></td><td>Site registry path.</td></tr>
+          <tr><td><code>ADMIN_TOKEN</code></td><td>empty</td><td>Enables dashboard authentication. Empty means open mode.</td></tr>
+          <tr><td><code>SALT_SECRET</code></td><td>generated</td><td>Secret for visitor hashes and auth cookies. Created at <code>DATA_DIR/.salt</code>.</td></tr>
+          <tr><td><code>TRUST_PROXY</code></td><td>off</td><td><code>1</code> behind a trusted proxy. Uses <code>CF-Connecting-IP</code>, <code>X-Vercel-Forwarded-For</code>, <code>X-Real-IP</code>, <code>X-Forwarded-For</code>.</td></tr>
+          <tr><td><code>GEO_HEADERS</code></td><td>see below</td><td>Country headers, first valid ISO-3166 code wins.</td></tr>
+          <tr><td><code>RETENTION_DAYS</code></td><td><code>400</code></td><td>Delete event files older than this.</td></tr>
+          <tr><td><code>MAX_EVENTS</code></td><td><code>250000</code></td><td>In-memory event cap; oldest events leave the index first.</td></tr>
+          <tr><td><code>RATE_LIMIT</code></td><td><code>120</code></td><td>Collection requests per minute per IP.</td></tr>
+          <tr><td><code>CONTENT_DIR</code></td><td><code>./examples/static-site</code></td><td>Folder the page editor can read and write.</td></tr>
+          <tr><td><code>EDITOR</code></td><td>enabled</td><td>Set <code>0</code>, <code>false</code> or <code>off</code> to disable the page editor entirely.</td></tr>
+        </tbody>
+      </table>
+      <p>Default geo headers: <code>cf-ipcountry,x-vercel-ip-country,x-country-code,x-geo-country</code>. Cloudflare and Vercel send the first two automatically. Without a CDN, locations stay empty rather than guessing.</p>
+      <div class="callout warn">
+        <p><strong>Keep <code>SALT_SECRET</code> stable.</strong> The auto-generated <code>data/.salt</code> works across restarts. If you run on an ephemeral filesystem, set <code>SALT_SECRET</code> explicitly; changing it splits visitor identities within the same day.</p>
+      </div>
+
+      <h2 id="authentication">Authentication</h2>
+      <p>When <code>ADMIN_TOKEN</code> is set, the dashboard asks for it and exchanges it for an <code>HttpOnly</code>, <code>SameSite=Lax</code> cookie valid for seven days. Collection stays public because the tracker cannot hold a secret.</p>
+      <pre><code># Scripts and CI can use a Bearer token
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "https://stats.example.com/api/v1/stats?site=demo&amp;range=7d"</code></pre>
+      <ul>
+        <li>Login attempts are limited to 10 per minute per IP.</li>
+        <li>Changing <code>ADMIN_TOKEN</code> or <code>SALT_SECRET</code> invalidates existing sessions.</li>
+        <li>In open mode (no token) the dashboard and read APIs are public. Never expose that to the internet.</li>
+        <li>The editor can write files; always run it with <code>ADMIN_TOKEN</code> set on a public host.</li>
+      </ul>
+
+      <h2 id="page-editor">Page editor</h2>
+      <p>Pulse includes a small WYSIWYG editor for static HTML pages. It edits the <strong>body content</strong> of existing files in <code>CONTENT_DIR</code>; head tags, styles, scripts and body attributes are preserved.</p>
+      <ol>
+        <li>Point <code>CONTENT_DIR</code> at a folder of <code>.html</code> files. The default is <code>examples/static-site</code>.</li>
+        <li>Open the dashboard and choose <strong>Page editor</strong> in the sidebar.</li>
+        <li>Pick a file, click into the page and edit. Use the toolbar for headings, lists, links and emphasis, or switch to <strong>View source</strong> for raw HTML.</li>
+        <li>Press <kbd>Ctrl</kbd>+<kbd>S</kbd> or <strong>Save page</strong>. The previous revision is written to <code>file.html.bak</code>.</li>
+      </ol>
+      <p>Details and limits:</p>
+      <ul>
+        <li>Only <code>.html</code>/<code>.htm</code> files are listed, up to 200 files, three folders deep and 2 MB each. Dotfiles, symlinks and common vendor folders are skipped.</li>
+        <li>Editing happens in a sandboxed same-origin preview; page scripts are blocked there, but they remain in the saved file.</li>
+        <li>Saves are atomic (temp file + rename) and keep one <code>.bak</code> revision per page.</li>
+        <li>The preview loads assets from <code>/content/</code>, which requires the admin session. The editor is disabled with <code>EDITOR=0</code>.</li>
+        <li>Files are edited in place. If the folder is inside a container without a volume, edits disappear when the container is replaced.</li>
+      </ul>
+      <div class="callout bad">
+        <p><strong>The editor writes to disk.</strong> Do not enable it on a shared or untrusted machine in open mode. Set <code>ADMIN_TOKEN</code>, and keep <code>CONTENT_DIR</code> scoped to the pages you actually want editable.</p>
+      </div>
+
+      <h2 id="proxy">Reverse proxy and TLS</h2>
+      <p>Run Pulse behind a TLS-terminating proxy and set <code>TRUST_PROXY=1</code>, so rate limiting and visitor hashing see real client IPs. Without it, every visitor behind the proxy looks like the proxy's IP.</p>
+      <h3>Caddy</h3>
+      <pre><code>stats.example.com {
+    reverse_proxy 127.0.0.1:4000
+}</code></pre>
+      <h3>Nginx</h3>
+      <pre><code>server {
+    listen 443 ssl;
+    server_name stats.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:4000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+      <p>Start Pulse bound to localhost:</p>
+      <pre><code>ADMIN_TOKEN="a-long-random-value" TRUST_PROXY=1 HOST=127.0.0.1 node server.js</code></pre>
+      <p>If the proxy overwrites <code>X-Forwarded-For</code> (the Nginx config above appends), keep <code>TRUST_PROXY=1</code> limited to that trusted hop. Do not enable it when clients can set forwarding headers themselves.</p>
+
+      <h2 id="docker">Docker</h2>
+      <p>The repository includes a <code>Dockerfile</code> and <code>docker-compose.yml</code>. The image runs as the unprivileged <code>node</code> user, stores data in a named volume and exposes a health check.</p>
+      <pre><code>cp .env.example .env
+# edit .env and set a long ADMIN_TOKEN
+docker compose up -d --build</code></pre>
+      <p>The compose file points <code>SITES_FILE</code> at <code>/data/sites.json</code>; the first run creates the starter registry. Replace it with your own and restart:</p>
+      <pre><code>docker compose cp ./sites.json pulse:/data/sites.json
+docker compose restart pulse</code></pre>
+      <p>Check logs and health:</p>
+      <pre><code>docker compose logs -f pulse
+curl http://localhost:4000/api/v1/health</code></pre>
+      <p>To edit a host folder with the page editor, mount it into the container and point <code>CONTENT_DIR</code> at the mount, for example:</p>
+      <pre><code>services:
+  pulse:
+    environment:
+      CONTENT_DIR: /content
+    volumes:
+      - pulse-data:/data
+      - ./examples/static-site:/content</code></pre>
+      <p>On Linux, the container user (uid 1000) needs write permission on the mounted folder. The default image does not persist edits made inside <code>/app</code>; always mount the content directory if you use the editor.</p>
+
+      <h2 id="systemd">Run as a service</h2>
+      <p>Create <code>/etc/systemd/system/pulse.service</code>:</p>
+      <pre><code>[Unit]
+Description=Pulse analytics
+After=network.target
+
+[Service]
+Type=simple
+User=pulse
+WorkingDirectory=/opt/pulse-analytics
+Environment=PORT=4000
+Environment=HOST=127.0.0.1
+Environment=TRUST_PROXY=1
+Environment=ADMIN_TOKEN=replace-with-a-long-random-value
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+      <pre><code>sudo systemctl daemon-reload
+sudo systemctl enable --now pulse
+sudo journalctl -u pulse -f</code></pre>
+      <p>Keep the token out of world-readable unit files on shared systems; use <code>EnvironmentFile=</code> with mode <code>0600</code> instead. The <code>data/</code> directory must be writable by the service user.</p>
+
+      <h2 id="backups">Backups and retention</h2>
+      <p>Everything that matters lives in <code>DATA_DIR</code>:</p>
+      <ul>
+        <li><code>events/events-YYYY-MM-DD.jsonl</code> — one append-only file per UTC day.</li>
+        <li><code>.salt</code> — the secret used for daily visitor hashes and admin cookies. Treat it as a credential.</li>
+      </ul>
+      <p>For a consistent backup, stop Pulse (or accept losing up to the last 500 ms of events) and copy the folder:</p>
+      <pre><code>tar -czf pulse-backup-$(date +%F).tar.gz data/</code></pre>
+      <p>Restore by placing the folder back and starting the server. Files older than <code>RETENTION_DAYS</code> are deleted automatically at startup and once a day; adjust retention before restoring if you need older data. Backups are outside Pulse's control — delete them according to your own policy.</p>
+
+      <h2 id="troubleshooting">Troubleshooting</h2>
+      <table>
+        <thead><tr><th>Symptom</th><th>Likely cause and fix</th></tr></thead>
+        <tbody>
+          <tr><td>Dashboard is empty after adding the snippet</td><td>Localhost is ignored unless <code>data-dev="true"</code>. Check the browser console for blocked requests, and confirm <code>data-site</code> matches <code>sites.json</code>.</td></tr>
+          <tr><td>Requests return 400 “Unknown site id”</td><td>The site ID is missing or not in <code>sites.json</code>; restart after editing the registry.</td></tr>
+          <tr><td>No events, no errors</td><td>Do Not Track / GPC is enabled, the user agent is classified as a bot, the page was prefetched, or the duration was under 250 ms. These are intentionally dropped.</td></tr>
+          <tr><td>CORS or network errors in the console</td><td><code>data-endpoint</code> must point at the collector origin (HTTPS if the page is HTTPS). The tracker uses a CORS-simple <code>text/plain</code> beacon.</td></tr>
+          <tr><td>Everyone appears to come from one IP</td><td>Set <code>TRUST_PROXY=1</code> and make sure your proxy overwrites forwarding headers.</td></tr>
+          <tr><td>Locations panel is empty</td><td>Country data comes from CDN geo headers. Put Cloudflare/Vercel in front, or configure <code>GEO_HEADERS</code>.</td></tr>
+          <tr><td>Only one visitor for many people</td><td>They share an IP and user agent, or you are behind a proxy that hides client IPs. Visitors are daily pseudonyms, not accounts.</td></tr>
+          <tr><td>429 responses</td><td>Rate limit hit (120/min/IP by default). Raise <code>RATE_LIMIT</code> or fix the proxy IP issue.</td></tr>
+          <tr><td>401 on the dashboard</td><td><code>ADMIN_TOKEN</code> is set. Sign in, or use <code>Authorization: Bearer …</code> for scripts.</td></tr>
+          <tr><td>Editor says disabled</td><td>Set <code>EDITOR=1</code> (or remove <code>EDITOR=0</code>) and restart. The editor is admin-only when a token is configured.</td></tr>
+          <tr><td>Editor lists no files</td><td>Check <code>CONTENT_DIR</code> exists and contains <code>.html</code> files within three folders. Restart after changing the variable.</td></tr>
+          <tr><td>Save fails with 403/413</td><td>The file path is outside <code>CONTENT_DIR</code>, the file is over 2 MB, or the session expired. Sign in and retry.</td></tr>
+          <tr><td>Port already in use</td><td>Change <code>PORT</code> or stop the other process. On Windows: <code>Get-NetTCPConnection -LocalPort 4000</code>.</td></tr>
+          <tr><td>Docker data disappears</td><td>Mount the <code>pulse-data</code> volume (compose does) and keep <code>DATA_DIR</code> pointed at it.</td></tr>
+        </tbody>
+      </table>
+      <p>Health and diagnostics:</p>
+      <pre><code>curl http://localhost:4000/api/v1/health</code></pre>
+      <p>The response includes the store size, pending writes, write errors, loaded files and version. Logs are written to stdout for requests under <code>/api/</code> and <code>/t.js</code>.</p>
+
+      <h2 id="api">API reference</h2>
+      <p>Read endpoints require auth when <code>ADMIN_TOKEN</code> is set. Collection is always public and CORS-enabled.</p>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST</code></td><td><code>/api/v1/event</code></td><td>Collect an event (alias <code>/api/collect</code>).</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/health</code></td><td>Liveness, version, store status. Public.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/sites</code></td><td>Site list, auth mode, editor availability.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/stats?site=demo&amp;range=30d</code></td><td>Aggregates; ranges <code>24h</code>, <code>7d</code>, <code>30d</code>, <code>90d</code>.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/live?site=demo</code></td><td>Active visitors and the last 30 minutes of events.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/export?site=demo&amp;range=30d&amp;dataset=pages</code></td><td>CSV export.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/pages</code></td><td>List editable HTML files.</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/pages/file?path=index.html</code></td><td>Page metadata (title, size, backup).</td></tr>
+          <tr><td><code>PUT</code></td><td><code>/api/v1/pages/file</code></td><td>Save <code>{ path, body, title }</code>; writes a <code>.bak</code>.</td></tr>
+          <tr><td><code>POST</code></td><td><code>/api/v1/login</code> / <code>/logout</code></td><td>Create or clear the admin cookie.</td></tr>
+        </tbody>
+      </table>
+      <p>CSV datasets: <code>pages</code>, <code>entry</code>, <code>exit</code>, <code>events</code>, <code>outbound</code>, <code>sources</code>, <code>countries</code>, <code>devices</code>, <code>browsers</code>, <code>os</code>.</p>
+
+      <h2 id="privacy">Privacy notes</h2>
+      <ul>
+        <li>No cookies. The tracker uses <code>sessionStorage</code> for a 30-minute session and <code>localStorage</code> only for the opt-out flag.</li>
+        <li>Raw IPs and user agents are hashed with a server secret and the current UTC day, then discarded. The 16-character pseudonym rotates at UTC midnight.</li>
+        <li>Referrers are reduced to a source label and hostname. Country comes from CDN headers. Full referring URLs are not stored.</li>
+        <li>DNT and GPC are honored by default, and bots, prefetches and prerenders are dropped at ingest.</li>
+        <li>Retention is bounded by <code>RETENTION_DAYS</code>, and all data stays on your server.</li>
+      </ul>
+      <p>Cookie-free does not automatically mean consent-free in every jurisdiction. Confirm your legal basis and retention policy for your context.</p>
+
+      <div class="footer">
+        <span>Pulse · privacy-first analytics for static sites</span>
+        <span><a href="/">Dashboard</a> · <a href="/api/v1/health">Health</a> · <a href="#overview">Back to top</a></span>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulse · Privacy-first analytics</title>
+  <meta name="description" content="Privacy-first visitor analytics for static HTML sites. No cookies, no fingerprinting.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Pulse analytics home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M3 17h5l3-8 5 16 4-11 3 5h6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand-text"><strong>Pulse</strong><span>analytics</span></span>
+      </a>
+
+      <div class="site-picker">
+        <label for="site-select">Site</label>
+        <div class="select-wrap">
+          <select id="site-select" aria-label="Select site"><option>Loading…</option></select>
+          <svg class="select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Dashboard sections">
+        <a class="nav-link active" href="#overview" data-target="overview">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 3h5v5H3zM12 3h5v5h-5zM3 12h5v5H3zM12 12h5v5h-5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Overview
+        </a>
+        <a class="nav-link" href="#pages-panel" data-target="pages-panel">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h7l3.5 3.5v11.5h-10.5zM12 2.5V6h3.5M7.5 10h5M7.5 13h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Pages
+        </a>
+        <a class="nav-link" href="#sources-panel" data-target="sources-panel">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15zM2.5 10h15M10 2.5c2 2 3 4.7 3 7.5s-1 5.5-3 7.5c-2-2-3-4.7-3-7.5s1-5.5 3-7.5z" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          Sources
+        </a>
+        <a class="nav-link" href="#devices-panel" data-target="devices-panel">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 17v-2.5M13.5 17v-2.5M4 4h12v8H4zM2.5 14.5h15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Audience
+        </a>
+        <a class="nav-link" href="#live-panel" data-target="live-panel">
+          <span class="nav-pulse" aria-hidden="true"></span>
+          Live
+        </a>
+        <a class="nav-link" href="#events-panel" data-target="events-panel">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 2L4 11h5l-1 7 8-10h-5l1-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Events
+        </a>
+        <button class="nav-link nav-tool hidden" id="editor-btn" type="button">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13.5 3.5l3 3L7 16H4v-3l9.5-9.5zM11.5 5.5l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Page editor
+          <span class="nav-tag">WYSIWYG</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="privacy-note"><span class="shield-dot" aria-hidden="true"></span>Cookie-free by design</div>
+        <a class="ghost-link" href="/docs" target="_blank" rel="noopener">Docs &amp; install guide</a>
+        <button class="ghost-link hidden" id="logout-link" type="button">Sign out</button>
+        <div class="version"><span id="version-label">Pulse</span> · <a href="/api/v1/health" target="_blank" rel="noopener">status</a></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <div class="eyebrow">Overview</div>
+          <h1 id="site-name">Loading…</h1>
+          <a id="site-domain" class="site-domain muted" target="_blank" rel="noopener"></a>
+        </div>
+        <div class="controls">
+          <div class="segmented" id="range-control" role="group" aria-label="Date range">
+            <button type="button" data-range="24h">24h</button>
+            <button type="button" data-range="7d">7d</button>
+            <button type="button" data-range="30d" class="active">30d</button>
+            <button type="button" data-range="90d">90d</button>
+          </div>
+          <button class="icon-btn" id="refresh-btn" type="button" title="Refresh" aria-label="Refresh data">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 10a6 6 0 11-1.8-4.3M16 3v4h-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <a class="icon-btn" id="export-btn" href="#" title="Export pages as CSV" aria-label="Export CSV">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v9m0 0l3.5-3.5M10 11.5L6.5 8M3.5 13.5v3h13v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <button class="icon-btn" id="theme-btn" type="button" title="Toggle theme" aria-label="Toggle color theme">
+            <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16 12.5A7 7 0 016.5 3a7 7 0 109.5 9.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M15.8 4.2l-1.4 1.4M5.6 14.4l-1.4 1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="statusline">
+        <span class="live-pill" id="live-pill" title="Visitors active in the last 5 minutes">
+          <span class="pulse-dot" aria-hidden="true"></span><strong id="live-count">0</strong> live
+        </span>
+        <span class="updated" id="updated">Connecting…</span>
+        <span class="spacer"></span>
+        <span class="range-note" id="range-note"></span>
+      </div>
+
+      <section class="panel empty-state hidden" id="empty-state" aria-live="polite">
+        <div class="empty-copy">
+          <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M3 20h5l3-8 4 12 4-9 3 5h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2>Start collecting visitors</h2>
+          <p>This site has no pageviews in the selected range. Add one line to your HTML and stats appear here within seconds.</p>
+          <pre class="snippet"><code id="snippet-code"></code></pre>
+          <div class="empty-actions">
+            <button class="btn primary" id="copy-snippet" type="button">Copy snippet</button>
+            <span class="muted">or run <code>npm run seed</code> to load demo data</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="overview" aria-labelledby="overview-heading">
+        <h2 class="sr-only" id="overview-heading">Overview</h2>
+        <div class="kpis" id="kpis">
+          <div class="kpi skeleton-card"></div>
+          <div class="kpi skeleton-card"></div>
+          <div class="kpi skeleton-card"></div>
+          <div class="kpi skeleton-card"></div>
+          <div class="kpi skeleton-card"></div>
+        </div>
+
+        <div class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <h3>Traffic</h3>
+              <p class="panel-sub" id="chart-sub">Visitors and pageviews over time</p>
+            </div>
+            <div class="legend">
+              <span class="legend-item"><i class="swatch swatch-visitors"></i>Visitors</span>
+              <span class="legend-item"><i class="swatch swatch-views"></i>Pageviews</span>
+            </div>
+          </div>
+          <div class="chart-wrap" id="chart">
+            <div class="chart-skeleton skeleton"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid-2">
+        <section class="panel" id="pages-panel" aria-labelledby="pages-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="pages-heading">Top pages</h3>
+              <p class="panel-sub">Most visited paths</p>
+            </div>
+            <span class="panel-tag" id="pages-tag">—</span>
+          </div>
+          <div class="panel-body" id="pages-body"></div>
+        </section>
+
+        <section class="panel" id="sources-panel" aria-labelledby="sources-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="sources-heading">Sources</h3>
+              <p class="panel-sub">Where visitors came from</p>
+            </div>
+            <span class="panel-tag" id="sources-tag">—</span>
+          </div>
+          <div class="panel-body" id="sources-body"></div>
+        </section>
+      </div>
+
+      <div class="grid grid-3">
+        <section class="panel" id="devices-panel" aria-labelledby="devices-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="devices-heading">Devices</h3>
+              <p class="panel-sub">Share of pageviews</p>
+            </div>
+          </div>
+          <div class="panel-body" id="devices-body"></div>
+        </section>
+
+        <section class="panel" id="countries-panel" aria-labelledby="countries-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="countries-heading">Locations</h3>
+              <p class="panel-sub">From CDN geo headers</p>
+            </div>
+          </div>
+          <div class="panel-body" id="countries-body"></div>
+        </section>
+
+        <section class="panel live-panel" id="live-panel" aria-labelledby="live-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="live-heading">Live</h3>
+              <p class="panel-sub">Refreshes every 5 seconds</p>
+            </div>
+            <span class="live-indicator"><span class="pulse-dot" aria-hidden="true"></span>live</span>
+          </div>
+          <div class="panel-body" id="live-body"></div>
+        </section>
+      </div>
+
+      <div class="grid grid-2">
+        <section class="panel" id="events-panel" aria-labelledby="events-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="events-heading">Custom events</h3>
+              <p class="panel-sub">Goals and interactions</p>
+            </div>
+            <span class="panel-tag" id="events-tag">—</span>
+          </div>
+          <div class="panel-body" id="events-body"></div>
+        </section>
+
+        <section class="panel" id="browsers-panel" aria-labelledby="browsers-heading">
+          <div class="panel-head">
+            <div>
+              <h3 id="browsers-heading">Browsers &amp; OS</h3>
+              <p class="panel-sub">Parsed from the user agent</p>
+            </div>
+          </div>
+          <div class="panel-body" id="browsers-body"></div>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <span>Pulse · self-hosted, cookie-free analytics. IP addresses are hashed daily and never stored.</span>
+        <span id="open-mode-note" class="muted"></span>
+      </footer>
+    </main>
+  </div>
+
+  <div class="editor-overlay hidden" id="editor" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+    <div class="editor-shell">
+      <header class="editor-head">
+        <div class="editor-heading">
+          <div class="eyebrow">Pages</div>
+          <h2 id="editor-title">Visual editor</h2>
+          <p class="editor-root" id="editor-root">Loading pages…</p>
+        </div>
+        <div class="editor-head-actions">
+          <span class="editor-dirty hidden" id="editor-dirty">Unsaved changes</span>
+          <button class="btn" id="editor-source-toggle" type="button">View source</button>
+          <button class="btn primary" id="editor-save" type="button">Save page</button>
+          <button class="icon-btn" id="editor-close" type="button" aria-label="Close editor" title="Close editor (Esc)">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="editor-body">
+        <aside class="editor-sidebar">
+          <div class="editor-sidebar-head">
+            <label class="sr-only" for="editor-filter">Filter pages</label>
+            <input id="editor-filter" type="search" placeholder="Filter pages…" autocomplete="off">
+            <button class="icon-btn" id="editor-refresh" type="button" title="Reload page list" aria-label="Reload page list">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 10a6 6 0 11-1.8-4.3M16 3v4h-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="editor-file-list" id="editor-file-list" role="listbox" aria-label="HTML pages"></div>
+          <p class="editor-sidebar-note">Saving keeps the previous revision as <code>.bak</code>. Scripts stay in the file but do not run in the editor.</p>
+        </aside>
+
+        <section class="editor-main">
+          <div class="editor-meta">
+            <label class="field inline">
+              <span>Page title</span>
+              <input id="editor-page-title" type="text" maxlength="200" placeholder="Untitled page" autocomplete="off">
+            </label>
+            <div class="editor-meta-right">
+              <code class="editor-path" id="editor-path">No page selected</code>
+              <span class="editor-status" id="editor-status"></span>
+            </div>
+          </div>
+
+          <div class="editor-toolbar" id="editor-toolbar" role="toolbar" aria-label="Formatting">
+            <div class="tool-group">
+              <button class="tool-btn" data-cmd="undo" type="button" title="Undo">↶</button>
+              <button class="tool-btn" data-cmd="redo" type="button" title="Redo">↷</button>
+            </div>
+            <div class="tool-group">
+              <button class="tool-btn" data-block="p" type="button" title="Paragraph">¶</button>
+              <button class="tool-btn" data-block="h2" type="button" title="Heading 2">H2</button>
+              <button class="tool-btn" data-block="h3" type="button" title="Heading 3">H3</button>
+              <button class="tool-btn" data-block="blockquote" type="button" title="Blockquote">❝</button>
+            </div>
+            <div class="tool-group">
+              <button class="tool-btn" data-cmd="bold" type="button" title="Bold (Ctrl+B)"><strong>B</strong></button>
+              <button class="tool-btn" data-cmd="italic" type="button" title="Italic (Ctrl+I)"><em>I</em></button>
+              <button class="tool-btn" data-cmd="underline" type="button" title="Underline (Ctrl+U)"><u>U</u></button>
+              <button class="tool-btn" data-cmd="strikeThrough" type="button" title="Strikethrough"><s>S</s></button>
+              <button class="tool-btn" data-cmd="removeFormat" type="button" title="Clear formatting">Tx</button>
+            </div>
+            <div class="tool-group">
+              <button class="tool-btn" data-cmd="insertUnorderedList" type="button" title="Bulleted list">•≡</button>
+              <button class="tool-btn" data-cmd="insertOrderedList" type="button" title="Numbered list">1≡</button>
+            </div>
+            <div class="tool-group">
+              <button class="tool-btn" data-action="link" type="button" title="Insert link">Link</button>
+              <button class="tool-btn" data-cmd="unlink" type="button" title="Remove link">Unlink</button>
+              <button class="tool-btn" data-action="image" type="button" title="Insert image">Image</button>
+              <button class="tool-btn" data-cmd="horizontalRule" type="button" title="Divider">—</button>
+            </div>
+          </div>
+
+          <div class="editor-workspace">
+            <div class="editor-loading" id="editor-loading">Loading page…</div>
+            <iframe id="editor-frame" class="editor-frame" title="Visual page editor" sandbox="allow-same-origin"></iframe>
+            <textarea id="editor-source" class="editor-source hidden" spellcheck="false" aria-label="HTML source"></textarea>
+          </div>
+          <p class="editor-hint">Click into the page to edit. Inline scripts are preserved but do not run here. <kbd>Ctrl</kbd>+<kbd>S</kbd> saves.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-overlay hidden" id="login" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <form class="login-card" id="login-form">
+      <div class="login-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M3 17h5l3-8 5 16 4-11 3 5h6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2 id="login-title">Sign in to Pulse</h2>
+      <p>Enter the admin token configured for this server.</p>
+      <label class="field">
+        <span>Admin token</span>
+        <input id="login-token" type="password" autocomplete="current-password" placeholder="ADMIN_TOKEN" required>
+      </label>
+      <p class="form-error hidden" id="login-error" role="alert"></p>
+      <button class="btn primary" type="submit">Unlock dashboard</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/dashboard.js" defer></script>
+</body>
+</html>
